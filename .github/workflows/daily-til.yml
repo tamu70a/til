@@ -1,4 +1,4 @@
-name: Create Tomorrow's TIL File
+name: Daily TIL Auto-Create
 
 on:
   schedule:
