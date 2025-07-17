@@ -1,4 +1,23 @@
-- name: Create Tomorrow's TIL file
+name: Create Tomorrow's TIL File
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTCで0時、日本時間9時に実行
+  workflow_dispatch: {}
+
+jobs:
+  create-til:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Tomorrow's TIL file
         run: |
           DATE=$(date -u -d "+9 hours +1 day" +'%Y-%m-%d')
           YEAR_MONTH=$(echo $DATE | cut -c 1-7)
