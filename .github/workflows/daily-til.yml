@@ -1,0 +1,46 @@
+name: Daily TIL Auto-Create
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  create-til:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Tomorrow's TIL file
+        run: |
+          DATE=$(date -u -d "+9 hours +1 day" +'%Y-%m-%d')
+          YEAR_MONTH=$(echo $DATE | cut -c 1-7)
+          FILE_PATH="$YEAR_MONTH/$DATE.md"
+
+          mkdir -p "$YEAR_MONTH"
+          if [ ! -f "$FILE_PATH" ]; then
+            cat << EOF > "$FILE_PATH"
+## $DATE TIL
+
+### 今日やったこと
+- [ ]
+
+### 今日学んだこと
+-
+
+### 気付き
+>
+
+### 次にやること
+- [ ]
+EOF
+            git add "$FILE_PATH"
+            git commit -m "Add TIL template for $DATE"
+            git push
+          fi
