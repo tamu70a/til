@@ -2,7 +2,7 @@ name: Daily TIL Auto-Create
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+  - cron: '30 2 * * *'  # UTCで2時30分、日本時間11時30分に実行
   workflow_dispatch: {}
 
 jobs:
