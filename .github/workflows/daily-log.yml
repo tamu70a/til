@@ -1,0 +1,64 @@
+name: Daily Learning Log
+
+on:
+  schedule:
+    # 毎日朝9時（JST）に実行（UTCで0時）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  create-daily-log:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup timezone
+        run: |
+          sudo timedatectl set-timezone Asia/Tokyo
+          
+      - name: Create daily log
+        run: |
+          # 日付の設定
+          TODAY=$(date +%Y-%m-%d)
+          MONTH=$(date +%Y-%m)
+          
+          # ディレクトリ作成
+          mkdir -p $MONTH
+          
+          # ファイルが存在しない場合のみ作成
+          if [ ! -f "$MONTH/$TODAY.md" ]; then
+            cat > "$MONTH/$TODAY.md" << EOF
+          # $TODAY 学習記録
+
+          ## 今日の学習内容
+          - 
+
+          ## 新しく学んだこと
+          -
+
+          ## つまずいたポイント・解決方法
+          - **問題**:
+          - **解決策**:
+          - **学び**:
+
+          ## 明日の学習予定
+          -
+
+          ## 感想
+
+          EOF
+          fi
+          
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📝 Create daily learning log for $(date +%Y-%m-%d)"
+            git push
+          fi
