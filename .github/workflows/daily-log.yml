@@ -32,6 +32,8 @@ jobs:
             cat > "$MONTH/$TODAY.md" << EOF
           #### $TODAY 学習記録
 
+          #### 学習時間: 時間
+
           #### 学習内容
           - 
 
